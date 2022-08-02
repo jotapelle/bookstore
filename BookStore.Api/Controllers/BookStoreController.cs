@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace BookStore.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/v1/[controller]")]
     public class BookStoreController : ControllerBase
     {
         private readonly IBooksBL _booksBL;
@@ -29,25 +29,22 @@ namespace BookStore.Controllers
         }
 
         [HttpGet]
-        [Route("books")]
-        public async Task<IActionResult> GetBooks()
+        public async Task<IActionResult> Get()
         {
             List<BookVM> result = _mapper.Map<List<BookVM>>(await _booksBL.GetList());
             return result == null ? NotFound() : Ok(result);
         }
 
         [HttpPost]
-        [Route("add")]
-        public async Task<IActionResult> AddBook(BookVM book)
+        public async Task<IActionResult> Add(BookVM book)
         {
             BookBO bookBO = _mapper.Map<BookBO>(book);
             await _booksBL.Add(bookBO);
             return Ok();
         }
 
-        [HttpPost]
-        [Route("remove")]
-        public async Task<IActionResult> RemoveBook(int id)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
         {
             await _booksBL.Remove(id);
             return Ok();
